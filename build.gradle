@@ -1,0 +1,60 @@
+apply {
+    plugin 'java'
+    plugin 'groovy'
+}
+
+apply {
+    plugin 'idea'
+    plugin 'eclipse'
+    plugin 'project-report'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.1.9'
+
+    testCompile 'org.fluentlenium:fluentlenium-festassert:0.9.1'
+    testCompile 'junit:junit:4.11'
+
+    // おまけ
+    testCompile 'com.github.detro.ghostdriver:phantomjsdriver:1.0.4'
+
+}
+
+sourceSets {
+    test {
+        java {
+            srcDir 'test'
+        }
+        groovy {
+            srcDir 'test-groovy'
+        }
+    }
+}
+
+test {
+    include 'practicework_fluent/**'
+}
+
+// おまけ
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath group: 'org.bitbucket.grimrose', name: 'gradle-obake-plugin', version: '0.1'
+    }
+}
+
+apply plugin: 'obake'
+
+task phantomJSTest(type: Test) {
+    useJUnit { includeCategories Integer.name }
+}
+
+phantomJSTest.dependsOn preparePhantomJS
